@@ -32,6 +32,13 @@ function clearMarkers() {
     markers = [];
 }
 
+function getLegendIcon(color) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 40" width="15" height="20">
+        <path d="M15 0C6.7 0 0 6.7 0 15c0 11.3 15 25 15 25s15-13.7 15-25C30 6.7 23.3 0 15 0z" fill="${color}" stroke="#222" stroke-width="1.5"/>
+        <circle cx="15" cy="15" r="5" fill="white"/>
+    </svg>`;
+}
+
 function getColoredIcon(color) {
     const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" viewBox="0 0 30 40">
         <path d="M15 0C6.7 0 0 6.7 0 15c0 11.3 15 25 15 25s15-13.7 15-25C30 6.7 23.3 0 15 0z" fill="${color}" stroke="#222" stroke-width="1.5"/>
