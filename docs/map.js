@@ -25,14 +25,11 @@ function getColor(dateStr) {
 }
 
 let allData = [];
-let markerGroup = L.markerClusterGroup();
-map.addLayer(markerGroup);
+let markers = [];
 
-function createCustomIcon(color) {
-    return L.divIcon({
-        className: 'custom-div-icon',
-        html: `<div class="marker-glow" style="background:${color};"></div>`
-    });
+function clearMarkers() {
+    markers.forEach(marker => map.removeLayer(marker));
+    markers = [];
 }
 
 function filterAndRender() {
@@ -41,7 +38,7 @@ function filterAndRender() {
     const startDate = startDateInput ? new Date(startDateInput) : null;
     const endDate = endDateInput ? new Date(endDateInput) : new Date();
 
-    markerGroup.clearLayers();
+    clearMarkers();
 
     let count = 0;
     let filteredDates = [];
@@ -57,8 +54,15 @@ function filterAndRender() {
 
         filteredDates.push(entryDate);
 
-        const marker = L.marker([lat, lon], {
-            icon: createCustomIcon(getColor(entry.date))
+        const marker = L.marker([lat + (Math.random() - 0.5) * 0.01, lon + (Math.random() - 0.5) * 0.01], {
+            icon: L.icon({
+                iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+                shadowSize: [41, 41]
+            })
         });
 
         marker.bindPopup(`
@@ -74,7 +78,8 @@ function filterAndRender() {
             this.closePopup();
         });
 
-        markerGroup.addLayer(marker);
+        marker.addTo(map);
+        markers.push(marker);
         count++;
     });
 
@@ -101,22 +106,3 @@ fetch('https://razzia-tracker.onrender.com/api/raids')
         allData = data;
         filterAndRender();
     });
-
-// Stil für Marker hinzufügen
-const style = document.createElement('style');
-style.textContent = `
-.custom-div-icon .marker-glow {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-    transition: transform 0.15s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    opacity: 0.9;
-}
-.custom-div-icon:hover .marker-glow {
-    transform: scale(1.3);
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
-    opacity: 1;
-}`;
-document.head.appendChild(style);
