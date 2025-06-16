@@ -26,7 +26,7 @@
         h3, h4 {
             font-family: 'Playfair Display', serif;
             color: var(--gold);
-            margin-top: 0;
+            margin-top: 1rem;
         }
 
         .sidebar, .info-panel {
@@ -71,7 +71,6 @@
         p {
             margin: 0.5rem 0 1rem 0;
         }
-
         .leaflet-popup-content-wrapper {
             border-radius: 0 !important;
         }
@@ -84,8 +83,6 @@
         <p>Der Razzia-Tracker der <i>GlücksWirtschaft</i> dokumentiert polizeiliche Maßnahmen gegen illegales Glücksspiel in Deutschland. Ob Spielhallen, Hinterzimmer oder digitale Plattformen – hier finden Sie verlässliche und aktuelle Informationen über Durchsuchungen, Beschlagnahmungen und Ermittlungen. Unsere Redaktion sammelt und verifiziert fortlaufend Berichte aus offiziellen Quellen, Medien und Polizeimeldungen.</p>
         <h3>Warum das wichtig ist:</h3>
         <p>Illegales Glücksspiel entzieht sich der Kontrolle, gefährdet Spieler und untergräbt den legalen Markt. Mit dem Razzia-Tracker schaffen wir erstmals überregional Transparenz – für Behörden, Politik, Branche und Öffentlichkeit.</p>
-        <br><br>
-        <p>Rot = heute<br>Orange = letzte 3 Tage<br>Gelb = letzte Woche<br>Blau = letzte 14 Tage</p>
     </div>
     <div class="map-container">
         <div id="map"></div>
@@ -98,6 +95,8 @@
         <input type="date" id="endDate">
         <br><br><h4>Summe der Einträge</h4>
         <p><span id="entryCount">0</span></p>
+        <br><br><h4>Legende</h4>
+        <p>Rot = heute<br>Orange = letzte 3 Tage<br>Gelb = letzte Woche<br>Blau = letzte 14 Tage</p>
     </div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
