@@ -14,8 +14,8 @@ DB_PATH = "db/razzien.db"
 nlp = spacy.load("de_core_news_sm")
 geolocator = Nominatim(user_agent="razzia-map")
 
-SUPABASE_URL = os.getenv("https://rbxjghygifiaxgfpybgz.supabase.co")
-SUPABASE_KEY = os.getenv("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJieGpnaHlnaWZpYXhnZnB5Ymd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwNjgzOTUsImV4cCI6MjA2NTY0NDM5NX0.Lp-Sx-6mMOidUS8gzfurggbXDXnn2tNbk5BrpWkWqY4")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
