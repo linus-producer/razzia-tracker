@@ -1,8 +1,11 @@
+import httpx
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
 
 app = FastAPI()
+SUPABASE_URL = "https://rbxjghygifiaxgfpybgz.supabase.co"
+API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJieGpnaHlnaWZpYXhnZnB5Ymd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwNjgzOTUsImV4cCI6MjA2NTY0NDM5NX0.Lp-Sx-6mMOidUS8gzfurggbXDXnn2tNbk5BrpWkWqY4"
 
 app.add_middleware(
     CORSMiddleware,
@@ -14,22 +17,9 @@ app.add_middleware(
 
 @app.get("/api/raids")
 def get_raids():
-    conn = sqlite3.connect("db/razzien.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT title, summary, date, location, lat, lon, url FROM raids ORDER BY date DESC")
-    rows = cursor.fetchall()
-    conn.close()
-
-    raids = [
-        {
-            "title": row[0],
-            "summary": row[1],
-            "date": row[2],
-            "location": row[3],
-            "lat": row[4],
-            "lon": row[5],
-            "url": row[6],
-        }
-        for row in rows
-    ]
-    return raids
+    headers = {
+        "apikey": API_KEY,
+        "Authorization": f"Bearer {API_KEY}"
+    }
+    r = httpx.get(SUPABASE_URL + "?select=*", headers=headers)
+    return r.json()
