@@ -15,7 +15,7 @@ function getColor(dateStr) {
     return 'green';
 }
 
-fetch('/api/raids')
+fetch('https://razzia-tracker.onrender.com/api/raids')
     .then(res => res.json())
     .then(data => {
         data.forEach(entry => {
