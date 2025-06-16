@@ -96,7 +96,46 @@
         <br><br><h3>Summe der Einträge</h3>
         <p><span id="entryCount">0</span></p>
         <br><br><h3>Legende</h3>
-        <p>Rot = heute<br>Orange = letzte 3 Tage<br>Gelb = letzte Woche<br>Blau = letzte 14 Tage</p>
+        <p><div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <div style="width: 20px; height: 30px;"> 
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 40" width="20" height="30">
+                <path d="M15 0C6.7 0 0 6.7 0 15c0 11.3 15 25 15 25s15-13.7 15-25C30 6.7 23.3 0 15 0z" fill="#8b1e2e" stroke="#222" stroke-width="1.5"/>
+                <circle cx="15" cy="15" r="5" fill="white"/>
+                </svg>
+            </div>
+            <span>Heute</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <div style="width: 20px; height: 30px;"> 
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 40" width="20" height="30">
+                <path d="M15 0C6.7 0 0 6.7 0 15c0 11.3 15 25 15 25s15-13.7 15-25C30 6.7 23.3 0 15 0z" fill="#b3541e" stroke="#222" stroke-width="1.5"/>
+                <circle cx="15" cy="15" r="5" fill="white"/>
+                </svg>
+            </div>
+            <span>Letzte 3 Tage</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <div style="width: 20px; height: 30px;"> 
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 40" width="20" height="30">
+                <path d="M15 0C6.7 0 0 6.7 0 15c0 11.3 15 25 15 25s15-13.7 15-25C30 6.7 23.3 0 15 0z" fill="#b89e1d" stroke="#222" stroke-width="1.5"/>
+                <circle cx="15" cy="15" r="5" fill="white"/>
+                </svg>
+            </div>
+            <span>Letzte Woche</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div style="width: 20px; height: 30px;"> 
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 40" width="20" height="30">
+                <path d="M15 0C6.7 0 0 6.7 0 15c0 11.3 15 25 15 25s15-13.7 15-25C30 6.7 23.3 0 15 0z" fill="#2c3e75" stroke="#222" stroke-width="1.5"/>
+                <circle cx="15" cy="15" r="5" fill="white"/>
+                </svg>
+            </div>
+            <span>Letzte 14 Tage</span>
+            </div>
+        </p>
     </div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
