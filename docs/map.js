@@ -1,6 +1,6 @@
 const map = L.map('map', {
     minZoom: 6,
-    maxZoom: 10,
+    maxZoom: 16,
     maxBounds: [
         [47.0, 5.5],
         [55.1, 15.5]
@@ -76,7 +76,7 @@ function filterAndRender() {
 
         const angle = (offsetIndex * 50) * (Math.PI / 180); // dichter gestreut
         const ring = Math.floor(offsetIndex / 8);           // jeder 8. Marker auf nächstem Ring
-        const radius = 0.1 + 0.05 * ring;                  // Start bei 6km, dann +3km pro Ring
+        const radius = 0.9 + 0.3 * ring;                  // Start bei 6km, dann +3km pro Ring
         const latOffset = lat + radius * Math.cos(angle);
         const lonOffset = lon + radius * Math.sin(angle);
 
