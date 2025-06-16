@@ -106,7 +106,7 @@ function filterAndRender() {
     const entryDisplay = document.getElementById("entryCount");
     entryDisplay.innerText = infoText;
     entryDisplay.style.fontSize = "1.2rem";
-    entryDisplay.style.fontWeight = "bold";
+    //entryDisplay.style.fontWeight = "bold";
 }
 
 document.getElementById("startDate").addEventListener("change", filterAndRender);
