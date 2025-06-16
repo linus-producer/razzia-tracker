@@ -1,15 +1,18 @@
 
 const map = L.map('map', {
     minZoom: 6,
-    maxZoom: 15,
+    maxZoom: 10,
     maxBounds: [
-        [47.0, 5.5],  // Südwestdeutschland
-        [55.1, 15.5]  // Nordostdeutschland
+        [47.0, 5.5],
+        [55.1, 15.5]
     ]
 }).setView([51.1657, 10.4515], 6);
 
-L.tileLayer('', {
-    attribution: ''
+// Nutze eine schlichte Kartenbasis ohne Topografie (Carto Light ohne Höhenlinien)
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap & Carto',
+    subdomains: 'abcd',
+    maxZoom: 19
 }).addTo(map);
 
 function getColor(dateStr) {
