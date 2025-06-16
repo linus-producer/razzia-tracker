@@ -1,8 +1,15 @@
-const map = L.map('map').setView([51.1657, 10.4515], 6);  // Deutschland-Zentrum
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; OpenStreetMap contributors'
+const map = L.map('map', {
+    minZoom: 6,
+    maxZoom: 15,
+    maxBounds: [
+        [47.0, 5.5],  // Südwestdeutschland
+        [55.1, 15.5]  // Nordostdeutschland
+    ]
+}).setView([51.1657, 10.4515], 6);
+
+L.tileLayer('', {
+    attribution: ''
 }).addTo(map);
 
 function getColor(dateStr) {
@@ -18,8 +25,16 @@ function getColor(dateStr) {
 fetch('https://razzia-tracker.onrender.com/api/raids')
     .then(res => res.json())
     .then(data => {
+        let count = 0;
         data.forEach(entry => {
-            const marker = L.circleMarker([entry.lat, entry.lon], {
+            const lat = parseFloat(entry.lat);
+            const lon = parseFloat(entry.lon);
+            if (isNaN(lat) || isNaN(lon)) {
+                console.warn("Ungültige Koordinaten:", entry);
+                return;
+            }
+
+            const marker = L.circleMarker([lat, lon], {
                 radius: 8,
                 fillColor: getColor(entry.date),
                 color: '#000',
@@ -33,5 +48,8 @@ fetch('https://razzia-tracker.onrender.com/api/raids')
                 ${entry.summary}<br>
                 <a href="${entry.url}" target="_blank">Mehr erfahren</a>
             `);
+
+            count++;
         });
+        document.getElementById("entryCount").innerText = count;
     });
