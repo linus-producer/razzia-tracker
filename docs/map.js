@@ -10,8 +10,8 @@ function getColor(dateStr) {
     const entryDate = new Date(dateStr);
     const diffDays = Math.floor((today - entryDate) / (1000 * 60 * 60 * 24));
 
-    if (diffDays <= 3) return 'red';
-    if (diffDays <= 14) return 'orange';
+    if (diffDays <= 1) return 'red';
+    if (diffDays <= 3) return 'orange';
     return 'green';
 }
 

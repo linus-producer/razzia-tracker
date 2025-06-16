@@ -1,25 +1,18 @@
-import httpx
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-import sqlite3
+import httpx
+import os
 
 app = FastAPI()
-SUPABASE_URL = "https://rbxjghygifiaxgfpybgz.supabase.co"
-API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJieGpnaHlnaWZpYXhnZnB5Ymd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwNjgzOTUsImV4cCI6MjA2NTY0NDM5NX0.Lp-Sx-6mMOidUS8gzfurggbXDXnn2tNbk5BrpWkWqY4"
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 @app.get("/api/raids")
 def get_raids():
     headers = {
-        "apikey": API_KEY,
-        "Authorization": f"Bearer {API_KEY}"
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}"
     }
-    r = httpx.get(SUPABASE_URL + "?select=*", headers=headers)
-    return r.json()
+    url = f"{SUPABASE_URL}/rest/v1/raids?select=*"
+    response = httpx.get(url, headers=headers)
+    return response.json()
