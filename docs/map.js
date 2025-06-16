@@ -76,7 +76,7 @@ function filterAndRender() {
 
         const angle = (offsetIndex * 50) * (Math.PI / 180); // dichter gestreut
         const ring = Math.floor(offsetIndex / 8);           // jeder 8. Marker auf nächstem Ring
-        const radius = 0.9 + 0.3 * ring;                  // Start bei 6km, dann +3km pro Ring
+        const radius = 0.2 + 0.1 * ring;                  // Start bei 6km, dann +3km pro Ring
         const latOffset = lat + radius * Math.cos(angle);
         const lonOffset = lon + radius * Math.sin(angle);
 
