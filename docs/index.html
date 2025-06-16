@@ -71,6 +71,10 @@
         p {
             margin: 0.5rem 0 1rem 0;
         }
+
+        .leaflet-popup-content-wrapper {
+            border-radius: 0 !important;
+        }
     </style>
 </head>
 <body>
@@ -92,7 +96,7 @@
         <input type="date" id="startDate">
         <label for="endDate">Bis:</label>
         <input type="date" id="endDate">
-        <h4>Summe der Einträge</h4>
+        <br><br><h4>Summe der Einträge</h4>
         <p><span id="entryCount">0</span></p>
     </div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
