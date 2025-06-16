@@ -46,19 +46,20 @@
 <body>
     <div class="sidebar">
         <h3>So funktioniert der Tracker</h3>
-        <p>Diese Karte zeigt Orte, an denen Razzien im Zusammenhang mit illegalem Glücksspiel stattgefunden haben.</p>
+        <p>Er zeigt Orte, an denen Polizeieinsätze im Zusammenhang mit illegalem Glücksspiel stattgefunden haben.</p>
+        <p>Rot = heute<br>Orange = letzte 3 Tage<br>Gelb = letzte Woche<br>Blau = letzte 14 Tage</p>
     </div>
     <div class="map-container">
         <div id="map"></div>
     </div>
     <div class="info-panel">
-        <h3>Statistik</h3>
-        <p><strong>Anzahl Einträge:</strong> <span id="entryCount">0</span></p>
         <h4>Zeitraum filtern</h4>
         <label for="startDate">Von:</label>
         <input type="date" id="startDate">
         <label for="endDate">Bis:</label>
         <input type="date" id="endDate">
+        <h4>Summe der Einträge</h4>
+        <p><span id="entryCount">0</span></p>
     </div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="map.js"></script>
