@@ -39,11 +39,13 @@ function filterAndRender() {
     const startDateInput = document.getElementById("startDate").value;
     const endDateInput = document.getElementById("endDate").value;
     const startDate = startDateInput ? new Date(startDateInput) : null;
-    const endDate = endDateInput ? new Date(endDateInput) : null;
+    const endDate = endDateInput ? new Date(endDateInput) : new Date();
 
     markerGroup.clearLayers();
 
     let count = 0;
+    let filteredDates = [];
+
     allData.forEach(entry => {
         const lat = parseFloat(entry.lat);
         const lon = parseFloat(entry.lon);
@@ -52,6 +54,8 @@ function filterAndRender() {
         const entryDate = new Date(entry.date);
         if (startDate && entryDate < startDate) return;
         if (endDate && entryDate > endDate) return;
+
+        filteredDates.push(entryDate);
 
         const marker = L.marker([lat, lon], {
             icon: createCustomIcon(getColor(entry.date))
@@ -74,7 +78,18 @@ function filterAndRender() {
         count++;
     });
 
-    document.getElementById("entryCount").innerText = count;
+    let timeRange = 0;
+    if (filteredDates.length > 0) {
+        const minDate = new Date(Math.min(...filteredDates));
+        const maxDate = new Date(Math.max(...filteredDates));
+        timeRange = Math.floor((maxDate - minDate) / (1000 * 60 * 60 * 24)) + 1;
+    }
+
+    const infoText = `${count} in ${timeRange} Tagen`;
+    const entryDisplay = document.getElementById("entryCount");
+    entryDisplay.innerText = infoText;
+    entryDisplay.style.fontSize = "1.5rem";
+    entryDisplay.style.fontWeight = "bold";
 }
 
 document.getElementById("startDate").addEventListener("change", filterAndRender);
