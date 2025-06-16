@@ -105,7 +105,7 @@ function filterAndRender() {
     const infoText = `${count} in ${timeRange} Tagen`;
     const entryDisplay = document.getElementById("entryCount");
     entryDisplay.innerText = infoText;
-    entryDisplay.style.fontSize = "1.5rem";
+    entryDisplay.style.fontSize = "1.2rem";
     entryDisplay.style.fontWeight = "bold";
 }
 
