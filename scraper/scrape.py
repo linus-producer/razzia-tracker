@@ -1,10 +1,11 @@
 import requests
-import sqlite3
 import spacy
 import time
 from bs4 import BeautifulSoup
 from datetime import datetime
 from geopy.geocoders import Nominatim
+from supabase import create_client
+import os
 
 KEYWORDS = ["razzia", "glücksspiel", "spielhalle", "durchsuchung", "illegal"]
 NEWS_URL = "https://www.presseportal.de/blaulicht"
@@ -12,6 +13,11 @@ DB_PATH = "db/razzien.db"
 
 nlp = spacy.load("de_core_news_sm")
 geolocator = Nominatim(user_agent="razzia-map")
+
+SUPABASE_URL = os.getenv("https://rbxjghygifiaxgfpybgz.supabase.co")
+SUPABASE_KEY = os.getenv("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJieGpnaHlnaWZpYXhnZnB5Ymd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwNjgzOTUsImV4cCI6MjA2NTY0NDM5NX0.Lp-Sx-6mMOidUS8gzfurggbXDXnn2tNbk5BrpWkWqY4")
+
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def fetch_articles():
     response = requests.get(NEWS_URL)
@@ -45,22 +51,15 @@ def geocode_location(location):
     return None, None
 
 def save_to_db(data):
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute("""
-        INSERT INTO raids (title, summary, date, location, lat, lon, url)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    """, data)
-    conn.commit()
-
-    # Alte Einträge löschen (max. 1000)
-    c.execute("""
-        DELETE FROM raids WHERE id NOT IN (
-            SELECT id FROM raids ORDER BY date DESC LIMIT 1000
-        )
-    """)
-    conn.commit()
-    conn.close()
+    response = supabase.table("raids").insert({
+        "title": data[0],
+        "summary": data[1],
+        "date": data[2],
+        "location": data[3],
+        "lat": data[4],
+        "lon": data[5],
+        "url": data[6]
+    }).execute()
 
 def main():
     articles = fetch_articles()
