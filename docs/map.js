@@ -18,18 +18,21 @@ function getColor(dateStr) {
     const entryDate = new Date(dateStr);
     const diffDays = Math.floor((today - entryDate) / (1000 * 60 * 60 * 24));
 
-    if (diffDays <= 1) return 'red';
-    if (diffDays <= 3) return 'orange';
-    if (diffDays <= 7) return 'yellow';
-    return 'blue';
+    if (diffDays <= 1) return '#d7263d';      // rot
+    if (diffDays <= 3) return '#ff8800';      // orange
+    if (diffDays <= 7) return '#ffcc00';      // gelb
+    return '#1d4ed8';                         // blau
 }
 
 let allData = [];
-let markers = [];
+let markerGroup = L.markerClusterGroup();
+map.addLayer(markerGroup);
 
-function clearMarkers() {
-    markers.forEach(marker => map.removeLayer(marker));
-    markers = [];
+function createCustomIcon(color) {
+    return L.divIcon({
+        className: 'custom-div-icon',
+        html: `<div class="marker-glow" style="background:${color};"></div>`
+    });
 }
 
 function filterAndRender() {
@@ -38,7 +41,7 @@ function filterAndRender() {
     const startDate = startDateInput ? new Date(startDateInput) : null;
     const endDate = endDateInput ? new Date(endDateInput) : null;
 
-    clearMarkers();
+    markerGroup.clearLayers();
 
     let count = 0;
     allData.forEach(entry => {
@@ -50,14 +53,9 @@ function filterAndRender() {
         if (startDate && entryDate < startDate) return;
         if (endDate && entryDate > endDate) return;
 
-        const marker = L.circleMarker([lat, lon], {
-            radius: 8,
-            fillColor: getColor(entry.date),
-            color: '#000',
-            weight: 1,
-            opacity: 1,
-            fillOpacity: 0.8
-        }).addTo(map);
+        const marker = L.marker([lat, lon], {
+            icon: createCustomIcon(getColor(entry.date))
+        });
 
         marker.bindPopup(`
             <b>${entry.title}</b><br>
@@ -65,7 +63,14 @@ function filterAndRender() {
             <a href="${entry.url}" target="_blank">Mehr erfahren</a>
         `);
 
-        markers.push(marker);
+        marker.on("mouseover", function () {
+            this.openPopup();
+        });
+        marker.on("mouseout", function () {
+            this.closePopup();
+        });
+
+        markerGroup.addLayer(marker);
         count++;
     });
 
@@ -81,3 +86,22 @@ fetch('https://razzia-tracker.onrender.com/api/raids')
         allData = data;
         filterAndRender();
     });
+
+// Stil für Marker hinzufügen
+const style = document.createElement('style');
+style.textContent = `
+.custom-div-icon .marker-glow {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.15s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    opacity: 0.9;
+}
+.custom-div-icon:hover .marker-glow {
+    transform: scale(1.3);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+    opacity: 1;
+}`;
+document.head.appendChild(style);
