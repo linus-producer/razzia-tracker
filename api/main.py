@@ -1,10 +1,19 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import httpx
 import os
 
 app = FastAPI()
 
-SUPABASE_URL = os.getenv("SUPABASE_URL")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://rbxjghygifiaxgfpybgz.supabase.co")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 @app.get("/api/raids")
