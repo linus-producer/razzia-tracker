@@ -32,6 +32,20 @@ function clearMarkers() {
     markers = [];
 }
 
+function getColoredIcon(color) {
+    const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" viewBox="0 0 30 40">
+        <path d="M15 0C6.7 0 0 6.7 0 15c0 11.3 15 25 15 25s15-13.7 15-25C30 6.7 23.3 0 15 0z" fill="${color}" stroke="#222" stroke-width="1.5"/>
+        <circle cx="15" cy="15" r="5" fill="white"/>
+    </svg>`;
+    return L.divIcon({
+        className: '',
+        html: svgIcon,
+        iconSize: [30, 40],
+        iconAnchor: [15, 40],
+        popupAnchor: [0, -35]
+    });
+}
+
 function filterAndRender() {
     const startDateInput = document.getElementById("startDate").value;
     const endDateInput = document.getElementById("endDate").value;
@@ -42,6 +56,8 @@ function filterAndRender() {
 
     let count = 0;
     let filteredDates = [];
+
+    const positionOffsetMap = new Map();
 
     allData.forEach(entry => {
         const lat = parseFloat(entry.lat);
@@ -54,15 +70,16 @@ function filterAndRender() {
 
         filteredDates.push(entryDate);
 
-        const marker = L.marker([lat + (Math.random() - 0.5) * 0.01, lon + (Math.random() - 0.5) * 0.01], {
-            icon: L.icon({
-                iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-                shadowSize: [41, 41]
-            })
+        const key = `${lat},${lon}`;
+        const offsetIndex = positionOffsetMap.get(key) || 0;
+        positionOffsetMap.set(key, offsetIndex + 1);
+        const angle = offsetIndex * 45;
+        const radius = 0.0025 * (offsetIndex + 1);
+        const latOffset = lat + radius * Math.cos(angle);
+        const lonOffset = lon + radius * Math.sin(angle);
+
+        const marker = L.marker([latOffset, lonOffset], {
+            icon: getColoredIcon(getColor(entry.date))
         });
 
         marker.bindPopup(`
@@ -70,13 +87,6 @@ function filterAndRender() {
             ${entry.summary}<br>
             <a href="${entry.url}" target="_blank">Mehr erfahren</a>
         `);
-
-        marker.on("mouseover", function () {
-            this.openPopup();
-        });
-        marker.on("mouseout", function () {
-            this.closePopup();
-        });
 
         marker.addTo(map);
         markers.push(marker);
