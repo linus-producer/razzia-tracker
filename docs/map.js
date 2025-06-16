@@ -33,16 +33,16 @@ function clearMarkers() {
 }
 
 function getColoredIcon(color) {
-    const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="55" viewBox="0 0 30 40">
+    const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" viewBox="0 0 30 40">
         <path d="M15 0C6.7 0 0 6.7 0 15c0 11.3 15 25 15 25s15-13.7 15-25C30 6.7 23.3 0 15 0z" fill="${color}" stroke="#222" stroke-width="1.5"/>
         <circle cx="15" cy="15" r="5" fill="white"/>
     </svg>`;
     return L.divIcon({
         className: '',
         html: svgIcon,
-        iconSize: [40, 55],
-        iconAnchor: [20, 55],
-        popupAnchor: [0, -40]
+        iconSize: [30, 40],
+        iconAnchor: [15, 40],
+        popupAnchor: [0, -35]
     });
 }
 
@@ -73,9 +73,8 @@ function filterAndRender() {
         const key = `${lat},${lon}`;
         const offsetIndex = positionOffsetMap.get(key) || 0;
         positionOffsetMap.set(key, offsetIndex + 1);
-
-        const angle = (offsetIndex * 45) * (Math.PI / 180); // radians
-        const radius = 0.01 * Math.ceil(offsetIndex / 6 + 1); // radius in degrees
+        const angle = (offsetIndex * 30) * (Math.PI / 180); // mehr Marker auf Kreis verteilt
+        const radius = 0.015; // größerer fixer Radius (~1.5 km bei mittlerer Zoomstufe)
         const latOffset = lat + radius * Math.cos(angle);
         const lonOffset = lon + radius * Math.sin(angle);
 
