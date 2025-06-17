@@ -33,10 +33,11 @@ function clearMarkers() {
 }
 
 function getColoredIcon(color) {
-    const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" viewBox="0 0 30 40">
-        <path d="M15 0C6.7 0 0 6.7 0 15c0 11.3 15 25 15 25s15-13.7 15-25C30 6.7 23.3 0 15 0z" fill="${color}" stroke="#222" stroke-width="1.5"/>
-        <circle cx="15" cy="15" r="5" fill="white"/>
-    </svg>`;
+    const svgIcon = `<svg width="24" height="30" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+<path fill-rule="evenodd" clip-rule="evenodd" d="M24 12C24 18.0965 18.9223 23.1316 13.4384 28.5696C12.961 29.043 12.4805 29.5195 12 30C11.5219 29.5219 11.0411 29.0452 10.5661 28.5741C5.08215 23.1361 0 18.0965 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12ZM12 16.5C14.4853 16.5 16.5 14.4853 16.5 12C16.5 9.51472 14.4853 7.5 12 7.5C9.51472 7.5 7.5 9.51472 7.5 12C7.5 14.4853 9.51472 16.5 12 16.5Z" fill="${color}"/>
+
+</svg>`;
     return L.divIcon({
         className: '',
         html: svgIcon,
@@ -89,6 +90,9 @@ function filterAndRender() {
             ${entry.summary}<br>
             <a href="${entry.url}" target="_blank">Mehr erfahren</a>
         `);
+        
+        const zIndex = 10000 - Math.floor((new Date() - entryDate) / (1000 * 60 * 60 * 24)); // neuere = höher
+        marker.setZIndexOffset(zIndex);
 
         marker.addTo(map);
         markers.push(marker);
