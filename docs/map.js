@@ -75,9 +75,9 @@ function filterAndRender() {
         const offsetIndex = positionOffsetMap.get(key) || 0;
         positionOffsetMap.set(key, offsetIndex + 1);
 
-        const angle = (offsetIndex * 50) * (Math.PI / 180); // dichter gestreut
-        const ring = Math.floor(offsetIndex / 8);           // jeder 8. Marker auf nächstem Ring
-        const radius = 0.2 + 0.1 * ring;                  // Start bei 6km, dann +3km pro Ring
+        const angle = (offsetIndex * 50) * (Math.PI / 180);
+        const ring = Math.floor(offsetIndex / 8);
+        const radius = 0.2 + 0.1 * ring;
         const latOffset = lat + radius * Math.cos(angle);
         const lonOffset = lon + radius * Math.sin(angle);
 
@@ -91,7 +91,7 @@ function filterAndRender() {
             <a href="${entry.url}" target="_blank">Mehr erfahren</a>
         `);
         
-        const zIndex = 10000 - Math.floor((new Date() - entryDate) / (1000 * 60 * 60 * 24)); // neuere = höher
+        const zIndex = 10000 - Math.floor((new Date() - entryDate) / (1000 * 60 * 60 * 24));
         marker.setZIndexOffset(zIndex);
 
         marker.addTo(map);
@@ -99,18 +99,20 @@ function filterAndRender() {
         count++;
     });
 
-    let timeRange = 0;
+    let infoText = "";
     if (filteredDates.length > 0) {
         const minDate = new Date(Math.min(...filteredDates));
         const maxDate = new Date(Math.max(...filteredDates));
-        timeRange = Math.floor((maxDate - minDate) / (1000 * 60 * 60 * 24)) + 1;
+        const days = Math.floor((maxDate - minDate) / (1000 * 60 * 60 * 24)) + 1;
+        const formattedMinDate = minDate.toLocaleDateString('de-DE');
+        infoText = `${count} in ${days} Tagen\nStartdatum: ${formattedMinDate}`;
+    } else {
+        infoText = `${count} Einträge`;
     }
 
-    const infoText = `${count} in ${timeRange} Tagen`;
     const entryDisplay = document.getElementById("entryCount");
     entryDisplay.innerText = infoText;
     entryDisplay.style.fontSize = "1.2rem";
-    //entryDisplay.style.fontWeight = "bold";
 }
 
 document.getElementById("startDate").addEventListener("change", filterAndRender);
