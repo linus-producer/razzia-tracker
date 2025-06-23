@@ -209,7 +209,7 @@ function filterAndRender() {
         const minDate = new Date(Math.min(...filteredDates));
         const maxDate = new Date(Math.max(...filteredDates));
         const days = Math.floor((maxDate - minDate) / (1000 * 60 * 60 * 24)) + 1;
-                const formattedMinDate = minDate.toLocaleDateString('de-DE');
+        const formattedMinDate = minDate.toLocaleDateString('de-DE');
         infoText = `${count} in ${days} Tagen`; //\nStartdatum: ${formattedMinDate}
     } else {
         infoText = `${count} Einträge`;
