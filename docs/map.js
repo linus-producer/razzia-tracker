@@ -24,25 +24,98 @@ fetch('bundeslaender.geojson')
             style: {
                 color: '#333333',
                 weight: 2,
-                opacity: 0.8
+                opacity: 0.8,
+                fillOpacity: 0.3,
+                fillColor: '#cccccc'
             }
         }).addTo(map);
-        populateFederalFilter(data);
+        buildFederalFilterUI(data);
     });
 
-function populateFederalFilter(geoData) {
-    const federalDiv = document.createElement('div');
-    federalDiv.innerHTML = '<h3>Bundesländer filtern</h3>';
+function buildFederalFilterUI(geoData) {
+    const container = document.getElementById('federalFilterContainer');
+    const toggleButton = document.createElement('button');
+    toggleButton.innerText = 'Bundesländer auswählen';
+    toggleButton.style.padding = '0.5rem';
+    toggleButton.style.border = '1px solid #ccc';
+    toggleButton.style.backgroundColor = '#f2f2f2';
+    toggleButton.style.fontFamily = 'Inter, sans-serif';
+    toggleButton.style.cursor = 'pointer';
+    toggleButton.style.marginBottom = '1rem';
+    container.appendChild(toggleButton);
+
+    const listWrapper = document.createElement('div');
+    listWrapper.style.display = 'none';
+    listWrapper.style.transition = 'max-height 0.3s ease';
+    listWrapper.style.overflow = 'hidden';
+    container.appendChild(listWrapper);
+
     geoData.features.forEach(feature => {
         const name = feature.properties.NAME_1;
-        const id = `federal-${name.replace(/\s+/g, '-')}`;
-        const label = document.createElement('label');
-        label.innerHTML = `<input type="checkbox" id="${id}" value="${name}" checked> ${name}`;
-        federalDiv.appendChild(label);
-        federalDiv.appendChild(document.createElement('br'));
+        const item = document.createElement('div');
+        item.style.display = 'flex';
+        item.style.alignItems = 'center';
+        item.style.cursor = 'pointer';
+        item.style.marginBottom = '0.4rem';
+
+        const box = document.createElement('div');
+        box.style.width = '20px';
+        box.style.height = '20px';
+        box.style.border = '1px solid #333';
+        box.style.marginRight = '0.5rem';
+        box.style.display = 'flex';
+        box.style.alignItems = 'center';
+        box.style.justifyContent = 'center';
+        box.style.backgroundColor = '#8b1e2e';
+        box.dataset.checked = 'true';
+
+        const check = document.createElement('div');
+        check.style.width = '12px';
+        check.style.height = '12px';
+        check.style.backgroundColor = '#ffffff';
+        box.appendChild(check);
+
+        const label = document.createElement('span');
+        label.innerText = name;
+        label.style.fontSize = '0.95rem';
+
+        item.appendChild(box);
+        item.appendChild(label);
+        listWrapper.appendChild(item);
+
+        item.addEventListener('click', () => {
+            if (box.dataset.checked === 'true') {
+                box.dataset.checked = 'false';
+                box.style.backgroundColor = '#ffffff';
+                check.style.display = 'none';
+            } else {
+                box.dataset.checked = 'true';
+                box.style.backgroundColor = '#8b1e2e';
+                check.style.display = 'block';
+            }
+            filterAndRender();
+        });
     });
-    document.querySelector('.info-panel').insertBefore(federalDiv, document.querySelector('.info-panel').children[2]);
-    document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', filterAndRender));
+
+    toggleButton.addEventListener('click', () => {
+        if (listWrapper.style.display === 'none') {
+            listWrapper.style.display = 'block';
+        } else {
+            listWrapper.style.display = 'none';
+        }
+    });
+}
+
+function getSelectedFederals() {
+    const boxes = document.querySelectorAll('#federalFilterContainer div[data-checked]');
+    const names = [];
+    boxes.forEach(box => {
+        if (box.dataset.checked === 'true') {
+            const label = box.parentElement.querySelector('span').innerText;
+            names.push(label);
+        }
+    });
+    return names;
 }
 
 function getColor(dateStr) {
@@ -82,7 +155,7 @@ function filterAndRender() {
     const endDateInput = document.getElementById("endDate").value;
     const startDate = startDateInput ? new Date(startDateInput) : null;
     const endDate = endDateInput ? new Date(endDateInput) : new Date();
-    const selectedFederals = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+    const selectedFederals = getSelectedFederals();
 
     clearMarkers();
 
@@ -136,7 +209,7 @@ function filterAndRender() {
         const minDate = new Date(Math.min(...filteredDates));
         const maxDate = new Date(Math.max(...filteredDates));
         const days = Math.floor((maxDate - minDate) / (1000 * 60 * 60 * 24)) + 1;
-        const formattedMinDate = minDate.toLocaleDateString('de-DE');
+                const formattedMinDate = minDate.toLocaleDateString('de-DE');
         infoText = `${count} in ${days} Tagen`; //\nStartdatum: ${formattedMinDate}
     } else {
         infoText = `${count} Einträge`;
@@ -150,9 +223,9 @@ function filterAndRender() {
         geoLayer.eachLayer(layer => {
             const name = layer.feature.properties.NAME_1;
             if (selectedFederals.includes(name)) {
-                layer.setStyle({ opacity: 0.8, fillOpacity: 0 });
+                layer.setStyle({ opacity: 0.8, fillOpacity: 0.3 });
             } else {
-                layer.setStyle({ opacity: 0.1, fillOpacity: 0 });
+                layer.setStyle({ opacity: 0.2, fillOpacity: 0.1 });
             }
         });
     }
