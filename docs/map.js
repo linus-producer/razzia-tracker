@@ -29,93 +29,34 @@ fetch('bundeslaender.geojson')
                 fillColor: '#cccccc'
             }
         }).addTo(map);
-        buildFederalFilterUI(data);
+        filterAndRender();
     });
 
-function buildFederalFilterUI(geoData) {
-    const container = document.getElementById('federalFilterContainer');
-    const toggleButton = document.createElement('button');
-    toggleButton.innerText = 'Bundesländer auswählen';
-    toggleButton.style.padding = '0.5rem';
-    toggleButton.style.border = '1px solid #ccc';
-    toggleButton.style.backgroundColor = '#f2f2f2';
-    toggleButton.style.fontFamily = 'Inter, sans-serif';
-    toggleButton.style.cursor = 'pointer';
-    toggleButton.style.marginBottom = '1rem';
-    container.appendChild(toggleButton);
+// Event Listener für Bundesländer-Filter
 
-    const listWrapper = document.createElement('div');
-    listWrapper.style.display = 'none';
-    listWrapper.style.transition = 'max-height 0.3s ease';
-    listWrapper.style.overflow = 'hidden';
-    container.appendChild(listWrapper);
+document.getElementById("toggleFederalButton").addEventListener("click", () => {
+    const list = document.getElementById("federalList");
+    list.style.display = (list.style.display === "none") ? "block" : "none";
+});
 
-    geoData.features.forEach(feature => {
-        const name = feature.properties.NAME_1;
-        const item = document.createElement('div');
-        item.style.display = 'flex';
-        item.style.alignItems = 'center';
-        item.style.cursor = 'pointer';
-        item.style.marginBottom = '0.4rem';
-
-        const box = document.createElement('div');
-        box.style.width = '20px';
-        box.style.height = '20px';
-        box.style.border = '1px solid #333';
-        box.style.marginRight = '0.5rem';
-        box.style.display = 'flex';
-        box.style.alignItems = 'center';
-        box.style.justifyContent = 'center';
-        box.style.backgroundColor = '#8b1e2e';
-        box.dataset.checked = 'true';
-
-        const check = document.createElement('div');
-        check.style.width = '12px';
-        check.style.height = '12px';
-        check.style.backgroundColor = '#ffffff';
-        box.appendChild(check);
-
-        const label = document.createElement('span');
-        label.innerText = name;
-        label.style.fontSize = '0.95rem';
-
-        item.appendChild(box);
-        item.appendChild(label);
-        listWrapper.appendChild(item);
-
-        item.addEventListener('click', () => {
-            if (box.dataset.checked === 'true') {
-                box.dataset.checked = 'false';
-                box.style.backgroundColor = '#ffffff';
-                check.style.display = 'none';
-            } else {
-                box.dataset.checked = 'true';
-                box.style.backgroundColor = '#8b1e2e';
-                check.style.display = 'block';
-            }
-            filterAndRender();
-        });
-    });
-
-    toggleButton.addEventListener('click', () => {
-        if (listWrapper.style.display === 'none') {
-            listWrapper.style.display = 'block';
+document.querySelectorAll(".federal-item").forEach(item => {
+    item.addEventListener("click", () => {
+        item.classList.toggle("active");
+        if (item.classList.contains("active")) {
+            item.innerText = "✔ " + item.dataset.name;
         } else {
-            listWrapper.style.display = 'none';
+            item.innerText = item.dataset.name;
         }
+        filterAndRender();
     });
-}
+});
 
 function getSelectedFederals() {
-    const boxes = document.querySelectorAll('#federalFilterContainer div[data-checked]');
-    const names = [];
-    boxes.forEach(box => {
-        if (box.dataset.checked === 'true') {
-            const label = box.parentElement.querySelector('span').innerText;
-            names.push(label);
-        }
+    const selected = [];
+    document.querySelectorAll(".federal-item.active").forEach(item => {
+        selected.push(item.dataset.name);
     });
-    return names;
+    return selected;
 }
 
 function getColor(dateStr) {
@@ -151,6 +92,7 @@ function getColoredIcon(color) {
 }
 
 function filterAndRender() {
+    if (!geoLayer) return;
     const startDateInput = document.getElementById("startDate").value;
     const endDateInput = document.getElementById("endDate").value;
     const startDate = startDateInput ? new Date(startDateInput) : null;
@@ -219,16 +161,14 @@ function filterAndRender() {
     entryDisplay.innerText = infoText;
     entryDisplay.style.fontSize = "1.2rem";
 
-    if (geoLayer) {
-        geoLayer.eachLayer(layer => {
-            const name = layer.feature.properties.NAME_1;
-            if (selectedFederals.includes(name)) {
-                layer.setStyle({ opacity: 0.8, fillOpacity: 0.3 });
-            } else {
-                layer.setStyle({ opacity: 0.2, fillOpacity: 0.1 });
-            }
-        });
-    }
+    geoLayer.eachLayer(layer => {
+        const name = layer.feature.properties.NAME_1;
+        if (selectedFederals.includes(name)) {
+            layer.setStyle({ opacity: 0.8, fillOpacity: 0.3 });
+        } else {
+            layer.setStyle({ opacity: 0.2, fillOpacity: 0.1 });
+        }
+    });
 }
 
 document.getElementById("startDate").addEventListener("change", filterAndRender);
