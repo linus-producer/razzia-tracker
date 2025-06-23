@@ -16,18 +16,34 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png
     maxZoom: 19
 }).addTo(map);
 
-// Bundesländergrenzen laden und anzeigen
+let geoLayer;
 fetch('bundeslaender.geojson')
     .then(res => res.json())
     .then(data => {
-        L.geoJSON(data, {
+        geoLayer = L.geoJSON(data, {
             style: {
                 color: '#333333',
                 weight: 2,
                 opacity: 0.8
             }
         }).addTo(map);
+        populateFederalFilter(data);
     });
+
+function populateFederalFilter(geoData) {
+    const federalDiv = document.createElement('div');
+    federalDiv.innerHTML = '<h3>Bundesländer filtern</h3>';
+    geoData.features.forEach(feature => {
+        const name = feature.properties.NAME_1;
+        const id = `federal-${name.replace(/\s+/g, '-')}`;
+        const label = document.createElement('label');
+        label.innerHTML = `<input type="checkbox" id="${id}" value="${name}" checked> ${name}`;
+        federalDiv.appendChild(label);
+        federalDiv.appendChild(document.createElement('br'));
+    });
+    document.querySelector('.info-panel').insertBefore(federalDiv, document.querySelector('.info-panel').children[2]);
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', filterAndRender));
+}
 
 function getColor(dateStr) {
     const today = new Date();
@@ -66,6 +82,7 @@ function filterAndRender() {
     const endDateInput = document.getElementById("endDate").value;
     const startDate = startDateInput ? new Date(startDateInput) : null;
     const endDate = endDateInput ? new Date(endDateInput) : new Date();
+    const selectedFederals = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
 
     clearMarkers();
 
@@ -75,6 +92,7 @@ function filterAndRender() {
     const positionOffsetMap = new Map();
 
     allData.forEach(entry => {
+        if (!selectedFederals.includes(entry.federal)) return;
         const lat = parseFloat(entry.lat);
         const lon = parseFloat(entry.lon);
         if (isNaN(lat) || isNaN(lon)) return;
@@ -127,6 +145,17 @@ function filterAndRender() {
     const entryDisplay = document.getElementById("entryCount");
     entryDisplay.innerText = infoText;
     entryDisplay.style.fontSize = "1.2rem";
+
+    if (geoLayer) {
+        geoLayer.eachLayer(layer => {
+            const name = layer.feature.properties.NAME_1;
+            if (selectedFederals.includes(name)) {
+                layer.setStyle({ opacity: 0.8, fillOpacity: 0 });
+            } else {
+                layer.setStyle({ opacity: 0.1, fillOpacity: 0 });
+            }
+        });
+    }
 }
 
 document.getElementById("startDate").addEventListener("change", filterAndRender);
