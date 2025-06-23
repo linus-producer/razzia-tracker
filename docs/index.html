@@ -65,6 +65,15 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
+            position: relative;
+        }
+
+        .info-panel .top-right-info {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-dark);
         }
 
         input[type="date"] {
@@ -118,7 +127,7 @@
                 height: 400px;
             }
         }
-
+    
     </style>
 </head>
 <body>
@@ -133,6 +142,7 @@
         <div id="map"></div>
     </div>
     <div class="info-panel">
+        <div class="top-right-info">Beobachtung seit 01.07.2025</div>
         <h3>Zeitraum filtern</h3>
         <label for="startDate">Von:</label>
         <input type="date" id="startDate">

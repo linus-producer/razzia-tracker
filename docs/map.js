@@ -19,7 +19,7 @@ function getColor(dateStr) {
     const diffDays = Math.floor((today - entryDate) / (1000 * 60 * 60 * 24));
 
     if (diffDays <= 1) return '#8b1e2e';      // dunkles Rot
-    if (diffDays <= 3) return '#b3541e';      // gedämpftes Orangebraun
+    /* if (diffDays <= 3) return '#b3541e';      // gedämpftes Orangebraun */
     if (diffDays <= 7) return '#b89e1d';      // gedämpftes Senfgelb
     return '#2c3e75';                         // gedämpftes Dunkelblau
 }
@@ -105,7 +105,7 @@ function filterAndRender() {
         const maxDate = new Date(Math.max(...filteredDates));
         const days = Math.floor((maxDate - minDate) / (1000 * 60 * 60 * 24)) + 1;
         const formattedMinDate = minDate.toLocaleDateString('de-DE');
-        infoText = `${count} in ${days} Tagen\nStartdatum: ${formattedMinDate}`;
+        infoText = `${count} in ${days} Tagen`; //\nStartdatum: ${formattedMinDate}
     } else {
         infoText = `${count} Einträge`;
     }
