@@ -1,5 +1,5 @@
 const map = L.map('map', {
-    minZoom: 6,
+    minZoom: window.innerWidth < 768 ? 3 : 6,
     maxZoom: 16,
     maxBounds: [
         [47.0, 5.5],
