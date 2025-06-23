@@ -124,7 +124,7 @@ function getColor(dateStr) {
     const diffDays = Math.floor((today - entryDate) / (1000 * 60 * 60 * 24));
 
     if (diffDays <= 1) return '#8b1e2e';      // dunkles Rot
-    /* if (diffDays <= 3) return '#b3541e';      // gedämpftes Orangebraun */
+    if (diffDays <= 3) return '#b3541e';      // gedämpftes Orangebraun
     if (diffDays <= 7) return '#b89e1d';      // gedämpftes Senfgelb
     return '#2c3e75';                         // gedämpftes Dunkelblau
 }
