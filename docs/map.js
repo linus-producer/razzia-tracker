@@ -5,7 +5,7 @@ const map = L.map('map', {
         [47.0, 5.5],
         [55.1, 15.5]
     ]
-}).setView([51.1657, 10.4515], 6);
+}).setView([51.1657, 10.4515], window.innerWidth < 768 ? 5 : 6);
 
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OpenStreetMap & Carto',
