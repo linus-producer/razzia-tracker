@@ -137,7 +137,7 @@ function filterAndRender() {
 
         const angle = (offsetIndex * 50) * (Math.PI / 180);
         const ring = Math.floor(offsetIndex / 8);
-        const radius = 0.2 + 0.1 * ring;
+        const radius = 0.1 + 0.05 * ring;
         const latOffset = lat + radius * Math.cos(angle);
         const lonOffset = lon + radius * Math.sin(angle);
 
