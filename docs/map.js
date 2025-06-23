@@ -59,15 +59,28 @@ function getSelectedFederals() {
     return selected;
 }
 
-function getColor(dateStr) {
-    const today = new Date();
-    const entryDate = new Date(dateStr);
-    const diffDays = Math.floor((today - entryDate) / (1000 * 60 * 60 * 24));
+function getColor(type) {
+    switch (type) {
+        case "Automatenspiel":
+        case "A":
+            return "#8b1e2e";  // dunkelrot
+        case "Wetten":
+        case "W":
+            return "#b89e1d";  // senfgelb
+        case "Online-Spiele":
+        case "O":
+            return "#2c3e75";  // dunkelblau
 
-    if (diffDays <= 1) return '#8b1e2e';      // dunkles Rot
-    if (diffDays <= 3) return '#b3541e';      // gedämpftes Orangebraun
-    if (diffDays <= 7) return '#b89e1d';      // gedämpftes Senfgelb
-    return '#2c3e75';                         // gedämpftes Dunkelblau
+
+        case "Sonstige":
+            return "#b3541e";  // orangebraun
+        case "":
+            return "#b3541e";  // orangebraun
+        case null:
+            return "#b3541e";  // orangebraun
+        default:
+            return "#b3541e";  // orangebraun
+    }
 }
 
 let allData = [];
@@ -129,7 +142,7 @@ function filterAndRender() {
         const lonOffset = lon + radius * Math.sin(angle);
 
         const marker = L.marker([latOffset, lonOffset], {
-            icon: getColoredIcon(getColor(entry.date))
+            icon: getColoredIcon(getColor(entry.type))
         });
 
         marker.bindPopup(`
