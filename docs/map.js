@@ -1,17 +1,33 @@
+const initialMinZoom = window.innerWidth < 768 ? 3 : 6;
+const initialZoom = window.innerWidth < 768 ? 3 : 6;
+
 const map = L.map('map', {
-    minZoom: window.innerWidth < 768 ? 5 : 6,
+    minZoom: initialMinZoom,
     maxZoom: 16,
     maxBounds: [
         [47.0, 5.5],
         [55.1, 15.5]
     ]
-}).setView([51.1657, 10.4515], window.innerWidth < 768 ? 5 : 6);
+}).setView([51.1657, 10.4515], initialZoom);
 
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OpenStreetMap & Carto',
     subdomains: 'abcd',
     maxZoom: 19
 }).addTo(map);
+
+// Bundesländergrenzen laden und anzeigen
+fetch('bundeslaender.geojson')
+    .then(res => res.json())
+    .then(data => {
+        L.geoJSON(data, {
+            style: {
+                color: '#333333',
+                weight: 2,
+                opacity: 0.8
+            }
+        }).addTo(map);
+    });
 
 function getColor(dateStr) {
     const today = new Date();
@@ -34,9 +50,7 @@ function clearMarkers() {
 
 function getColoredIcon(color) {
     const svgIcon = `<svg width="24" height="30" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-
 <path fill-rule="evenodd" clip-rule="evenodd" d="M24 12C24 18.0965 18.9223 23.1316 13.4384 28.5696C12.961 29.043 12.4805 29.5195 12 30C11.5219 29.5219 11.0411 29.0452 10.5661 28.5741C5.08215 23.1361 0 18.0965 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12ZM12 16.5C14.4853 16.5 16.5 14.4853 16.5 12C16.5 9.51472 14.4853 7.5 12 7.5C9.51472 7.5 7.5 9.51472 7.5 12C7.5 14.4853 9.51472 16.5 12 16.5Z" fill="${color}"/>
-
 </svg>`;
     return L.divIcon({
         className: '',
