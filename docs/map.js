@@ -1,5 +1,5 @@
 const initialMinZoom = window.innerWidth < 768 ? 3 : 6;
-const initialZoom = window.innerWidth < 768 ? 3 : 6;
+const initialZoom = window.innerWidth < 768 ? 4 : 6;
 
 const map = L.map('map', {
     minZoom: initialMinZoom,
