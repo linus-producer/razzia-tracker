@@ -58,7 +58,7 @@ Quelle:
     try:
         with smtplib.SMTP("k75s74.meinserver.io", 587) as server:
             server.starttls()
-            server.login("no-reply@glueckswirtschaft.de", {SMTP_KEY})
+            server.login("no-reply@glueckswirtschaft.de", SMTP_KEY)
             server.send_message(msg)
     except Exception as e:
         print(f"Fehler beim E-Mail-Versand: {e}")
