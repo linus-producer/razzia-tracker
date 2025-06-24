@@ -1,5 +1,5 @@
-const initialMinZoom = window.innerWidth < 768 ? 3 : 6;
-const initialZoom = window.innerWidth < 768 ? 3 : 6;
+const initialMinZoom = window.innerWidth < 768 ? 3 : 7;
+const initialZoom = window.innerWidth < 768 ? 3 : 7;
 
 const map = L.map('map', {
     minZoom: initialMinZoom,
@@ -23,7 +23,7 @@ fetch('bundeslaender.geojson')
         geoLayer = L.geoJSON(data, {
             style: {
                 color: '#333333',
-                weight: 2,
+                weight: 1.5,
                 opacity: 0.8,
                 fillOpacity: 0.3,
                 fillColor: '#cccccc'
