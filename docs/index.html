@@ -150,6 +150,20 @@
             background-color: #e6e6e6;
         }
 
+        .spinner {
+            display: none;
+            margin-top: 1rem;
+            width: 30px;
+            height: 30px;
+            border: 4px solid #ccc;
+            border-top-color: #003300;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -196,6 +210,7 @@
                 </button>
 
                 <div id="formResponse" style="margin-top: 1rem; color: green;"></div>
+                <div id="spinner" class="spinner"></div>
             </form>
         </div>
     </div>

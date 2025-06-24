@@ -202,30 +202,51 @@ document.getElementById("reportForm").addEventListener("submit", async function(
     const message = document.getElementById("message").value.trim();
     const source = document.getElementById("source").value.trim();
     const captchaResponse = grecaptcha.getResponse();
+    const formResponse = document.getElementById("formResponse");
+    const spinner = document.getElementById("spinner");
+
+    formResponse.innerText = "";
+    spinner.style.display = "block";
 
     if (!message || !source) {
-        alert("Bitte fülle alle Felder aus.");
+        spinner.style.display = "none";
+        formResponse.style.color = "red";
+        formResponse.innerText = "Bitte fülle alle Felder aus.";
         return;
     }
 
     if (!captchaResponse) {
-        alert("Bitte bestätige das CAPTCHA.");
+        spinner.style.display = "none";
+        formResponse.style.color = "red";
+        formResponse.innerText = "Bitte bestätige das CAPTCHA.";
         return;
     }
 
     const payload = { message, source, captcha: captchaResponse };
 
-    const res = await fetch("https://razzia-tracker.onrender.com/api/report", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    });
+    try {
+        const res = await fetch("https://razzia-tracker.onrender.com/api/report", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
 
-    if (res.ok) {
-        document.getElementById("formResponse").innerText = "Meldung erfolgreich gesendet!";
-        document.getElementById("reportForm").reset();
-        grecaptcha.reset();
-    } else {
-        document.getElementById("formResponse").innerText = "Fehler beim Senden.";
+        spinner.style.display = "none";
+
+        if (res.ok) {
+            formResponse.style.color = "green";
+            formResponse.innerText = "Meldung erfolgreich gesendet!";
+            document.getElementById("reportForm").reset();
+            grecaptcha.reset();
+        } else {
+            formResponse.style.color = "red";
+            formResponse.innerText = "Fehler beim Senden.";
+        }
+    } catch (err) {
+        spinner.style.display = "none";
+        formResponse.style.color = "red";
+        formResponse.innerText = "Serverfehler.";
     }
+
+    setTimeout(() => { formResponse.innerText = ""; }, 5000);
 });
