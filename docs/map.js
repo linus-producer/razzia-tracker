@@ -206,21 +206,20 @@ document.getElementById("reportForm").addEventListener("submit", async function(
     const spinner = document.getElementById("spinner");
 
     formResponse.innerText = "";
-    spinner.style.display = "block";
 
     if (!message || !source) {
-        spinner.style.display = "none";
         formResponse.style.color = "red";
         formResponse.innerText = "Bitte fülle alle Felder aus.";
         return;
     }
 
     if (!captchaResponse) {
-        spinner.style.display = "none";
         formResponse.style.color = "red";
         formResponse.innerText = "Bitte bestätige das CAPTCHA.";
         return;
     }
+
+    spinner.style.display = "block";
 
     const payload = { message, source, captcha: captchaResponse };
 
