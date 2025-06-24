@@ -19,6 +19,7 @@ app.add_middleware(
 # Supabase-Einstellungen
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://rbxjghygifiaxgfpybgz.supabase.co")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SMTP_KEY = os.getenv("SMTP_KEY")
 
 @app.get("/api/raids")
 def get_raids():
@@ -50,14 +51,14 @@ Quelle:
 
     msg = MIMEText(email_content)
     msg["Subject"] = "Neue Razzia-Meldung"
-    msg["From"] = "info@glueckswirtschaft.de" #+++
+    msg["From"] = "no-reply@glueckswirtschaft.de"
     msg["To"] = "linus@producer.works" #+++
 
     # SMTP-Server
     try:
-        with smtplib.SMTP("smtp.provider.de", 587) as server: #+++
+        with smtplib.SMTP("k75s74.meinserver.io", 587) as server:
             server.starttls()
-            server.login("DEIN_SMTP_USER", "DEIN_SMTP_PASS")  #+++
+            server.login("no-reply@glueckswirtschaft.de", {SMTP_KEY})
             server.send_message(msg)
     except Exception as e:
         print(f"Fehler beim E-Mail-Versand: {e}")
