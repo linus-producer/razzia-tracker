@@ -1,7 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import httpx
 import os
+import smtplib
+from email.mime.text import MIMEText
 
 app = FastAPI()
 
@@ -13,6 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Supabase-Einstellungen
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://rbxjghygifiaxgfpybgz.supabase.co")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
@@ -25,3 +29,45 @@ def get_raids():
     url = f"{SUPABASE_URL}/rest/v1/raids?select=*"
     response = httpx.get(url, headers=headers)
     return response.json()
+
+# Model für eingehende Meldung
+class Report(BaseModel):
+    message: str
+    source: str
+    captcha: str
+
+# E-Mail Versand
+def send_email(message: str, source: str):
+    email_content = f"""
+Neue Meldung eingegangen:
+
+Meldung:
+{message}
+
+Quelle:
+{source}
+"""
+
+    msg = MIMEText(email_content)
+    msg["Subject"] = "Neue Razzia-Meldung"
+    msg["From"] = "info@glueckswirtschaft.de" #+++
+    msg["To"] = "linus@producer.works" #+++
+
+    # SMTP-Server
+    try:
+        with smtplib.SMTP("smtp.provider.de", 587) as server: #+++
+            server.starttls()
+            server.login("DEIN_SMTP_USER", "DEIN_SMTP_PASS")  #+++
+            server.send_message(msg)
+    except Exception as e:
+        print(f"Fehler beim E-Mail-Versand: {e}")
+        raise HTTPException(status_code=500, detail="E-Mail konnte nicht gesendet werden.")
+
+@app.post("/api/report")
+def receive_report(report: Report):
+    if not report.message or not report.source or not report.captcha:
+        raise HTTPException(status_code=400, detail="Alle Felder müssen ausgefüllt sein.")
+
+    send_email(report.message, report.source)
+
+    return {"status": "ok"}

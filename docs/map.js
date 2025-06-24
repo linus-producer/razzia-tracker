@@ -193,3 +193,39 @@ fetch('https://razzia-tracker.onrender.com/api/raids')
         allData = data;
         filterAndRender();
     });
+
+/* MELDEFORMULAR */
+
+document.getElementById("reportForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const message = document.getElementById("message").value.trim();
+    const source = document.getElementById("source").value.trim();
+    const captchaResponse = grecaptcha.getResponse();
+
+    if (!message || !source) {
+        alert("Bitte fülle alle Felder aus.");
+        return;
+    }
+
+    if (!captchaResponse) {
+        alert("Bitte bestätige das CAPTCHA.");
+        return;
+    }
+
+    const payload = { message, source, captcha: captchaResponse };
+
+    const res = await fetch("https://razzia-tracker.onrender.com/api/report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+        document.getElementById("formResponse").innerText = "Meldung erfolgreich gesendet!";
+        document.getElementById("reportForm").reset();
+        grecaptcha.reset();
+    } else {
+        document.getElementById("formResponse").innerText = "Fehler beim Senden.";
+    }
+});

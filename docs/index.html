@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         :root {
             --gold: #bfa46f;
@@ -169,6 +170,33 @@
         <p>Der Razzia-Tracker der <i>GlücksWirtschaft</i> dokumentiert polizeiliche Maßnahmen gegen illegales Glücksspiel in Deutschland. Ob Spielhallen, Hinterzimmer oder digitale Plattformen – hier finden Sie verlässliche und aktuelle Informationen über Durchsuchungen, Beschlagnahmungen und Ermittlungen. Unsere Redaktion sammelt und verifiziert fortlaufend Berichte aus offiziellen Quellen, Medien und Polizeimeldungen.</p>
         <h3>Warum das wichtig ist:</h3>
         <p>Illegales Glücksspiel entzieht sich der Kontrolle, gefährdet Spieler und untergräbt den legalen Markt. Mit dem Razzia-Tracker schaffen wir erstmals überregional Transparenz – für Behörden, Politik, Branche und Öffentlichkeit.</p>
+
+        <br><br>
+        <h3>Meldung einreichen</h3>
+        <form id="reportForm">
+            <label for="message">Meldung:</label><br>
+            <textarea id="message" name="message" rows="4" style="width: 100%;"></textarea><br><br>
+
+            <label for="source">Quelle:</label><br>
+            <input type="text" id="source" name="source" style="width: 100%;"><br><br>
+
+            <div id="captcha-container" style="margin-bottom: 1rem;">
+                <!-- <div class="g-recaptcha" data-sitekey="DEIN_SITE_KEY"></div> -->
+            </div>
+
+            <button type="submit" style="
+                color: white;
+                background-color: #003300;
+                text-decoration: none;
+                padding: 5px 5px;
+                border-radius: 0;
+                border: none;
+                font-size: 1rem;
+                width: 100%;
+                cursor: pointer;
+            ">Senden</button>
+        </form>
+        <div id="formResponse" style="margin-top: 1rem; color: green;"></div>
     </div>
     <div class="map-container">
         <div id="map"></div>
