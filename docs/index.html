@@ -300,23 +300,50 @@
     <script src="map.js"></script>
     <script>
         document.getElementById('reportForm').addEventListener('submit', function (e) {
-            e.preventDefault(); // Standard-Formularverhalten verhindern
+            e.preventDefault();
 
-            // Spinner anzeigen
-            document.getElementById('spinner').style.display = 'block';
+            const message = document.getElementById('message').value.trim();
+            const source = document.getElementById('source').value.trim();
+            const spinner = document.getElementById('spinner');
+            const responseBox = document.getElementById('formResponse');
+
+            if (!message || !source) {
+                responseBox.style.color = "red";
+                responseBox.textContent = "Bitte alle Felder ausfüllen.";
+                return;
+            }
+
+            spinner.style.display = 'block';
+            responseBox.textContent = "";
 
             grecaptcha.ready(function () {
                 grecaptcha.execute('6Ld4Ym0rAAAAADOulRfKmGerdUSWYfxptXjFDLev', { action: 'submit' }).then(function (token) {
-
-                    // Neuen Input mit Token erzeugen
-                    var input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'g-recaptcha-response';
-                    input.value = token;
-                    document.getElementById('reportForm').appendChild(input);
-
-                    // Formular jetzt absenden
-                    document.getElementById('reportForm').submit();
+                    fetch('https://razzia-tracker.onrender.com/api/report', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: message,
+                            source: source,
+                            captcha: token
+                        })
+                    })
+                    .then(response => {
+                        spinner.style.display = 'none';
+                        if (!response.ok) throw new Error("Fehler beim Senden");
+                        return response.json();
+                    })
+                    .then(data => {
+                        responseBox.style.color = "green";
+                        responseBox.textContent = "Meldung erfolgreich übermittelt.";
+                        document.getElementById('reportForm').reset();
+                    })
+                    .catch(err => {
+                        responseBox.style.color = "red";
+                        responseBox.textContent = "Fehler beim Senden. Bitte später erneut versuchen.";
+                        console.error("Fehler:", err);
+                    });
                 });
             });
         });
