@@ -206,13 +206,15 @@
                 <div class="g-recaptcha" data-sitekey="6Ld4Ym0rAAAAADOulRfKmGerdUSWYfxptXjFDLev"></div>
                 </div>
 
-                <button type="submit" 
-                    style="align-self: flex-start; color: white; background-color: #003300; padding: 8px 16px; border: none; border-radius: 0; font-family: 'Inter', sans-serif; cursor: pointer;">
-                    Senden
-                </button>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button type="submit" 
+                        style="color: white; background-color: #003300; padding: 8px 16px; border: none; border-radius: 0; font-family: 'Inter', sans-serif; cursor: pointer;">
+                        Senden
+                    </button>
+                    <div id="spinner" class="spinner"></div>
+                </div>
 
                 <div id="formResponse" style="margin-top: 1rem; color: green;"></div>
-                <div id="spinner" class="spinner"></div>
             </form>
         </div>
     </div>
