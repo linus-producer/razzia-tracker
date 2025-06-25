@@ -69,6 +69,22 @@ def receive_report(report: Report):
     if not report.message or not report.source or not report.captcha:
         raise HTTPException(status_code=400, detail="Alle Felder müssen ausgefüllt sein.")
 
-    send_email(report.message, report.source)
+    # reCAPTCHA-Token prüfen
+    verify_url = "https://www.google.com/recaptcha/api/siteverify"
+    payload = {
+        "secret": os.getenv("RECAPTCHA_SECRET_KEY"),  # Im .env setzen
+        "response": report.captcha
+    }
 
+    try:
+        recaptcha_response = httpx.post(verify_url, data=payload)
+        result = recaptcha_response.json()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Captcha-Verifizierung fehlgeschlagen.")
+
+    if not result.get("success") or result.get("score", 0) < 0.5:
+        raise HTTPException(status_code=403, detail="Captcha ungültig oder Score zu niedrig.")
+
+    # Wenn OK → E-Mail senden
+    send_email(report.message, report.source)
     return {"status": "ok"}
