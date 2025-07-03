@@ -6,16 +6,22 @@ from datetime import datetime
 from geopy.geocoders import Nominatim
 from supabase import create_client
 import os
+from dotenv import load_dotenv
 
-KEYWORDS = ["razzia", "glücksspiel", "spielhalle", "durchsuchung", "illegal"]
-NEWS_URL = "https://www.presseportal.de/blaulicht"
-DB_PATH = "db/razzien.db"
+# .env laden
+load_dotenv()
+
 
 nlp = spacy.load("de_core_news_sm")
 geolocator = Nominatim(user_agent="razzia-map")
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+NEWS_URL = os.getenv("NEWS_URL", "https://www.presseportal.de/blaulicht")
+DB_PATH = os.getenv("DB_PATH", "db/razzien.db")
+
+# KEYWORDS aus .env lesen und als Liste parsen
+KEYWORDS = [k.strip().lower() for k in os.getenv("KEYWORDS", "").split(",") if k.strip()]
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 

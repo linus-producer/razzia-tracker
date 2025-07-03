@@ -5,6 +5,10 @@ import httpx
 import os
 import smtplib
 from email.mime.text import MIMEText
+from dotenv import load_dotenv
+
+# .env laden
+load_dotenv()
 
 app = FastAPI()
 
@@ -19,7 +23,16 @@ app.add_middleware(
 # Supabase-Einstellungen
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://rbxjghygifiaxgfpybgz.supabase.co")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-SMTP_KEY = os.getenv("SMTP_KEY")
+
+# SMTP-Einstellungen
+SMTP_HOST = os.getenv("SMTP_HOST")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+SMTP_USER = os.getenv("SMTP_USER")
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
+SMTP_TO = os.getenv("SMTP_TO")
+
+# reCAPTCHA
+RECAPTCHA_SECRET_KEY = os.getenv("RECAPTCHA_SECRET_KEY")
 
 @app.get("/api/raids")
 def get_raids():
@@ -51,14 +64,14 @@ Quelle:
 
     msg = MIMEText(email_content)
     msg["Subject"] = "Neue Razzia-Meldung"
-    msg["From"] = "no-reply@glueckswirtschaft.de"
-    msg["To"] = "linus@producer.works" #+++
+    msg["From"] = SMTP_USER
+    msg["To"] = SMTP_TO
 
     # SMTP-Server
     try:
-        with smtplib.SMTP("k75s74.meinserver.io", 587) as server:
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
             server.starttls()
-            server.login("no-reply@glueckswirtschaft.de", SMTP_KEY)
+            server.login(SMTP_USER, SMTP_PASSWORD)
             server.send_message(msg)
     except Exception as e:
         print(f"Fehler beim E-Mail-Versand: {e}")
@@ -72,7 +85,7 @@ def receive_report(report: Report):
     # reCAPTCHA-Token prüfen
     verify_url = "https://www.google.com/recaptcha/api/siteverify"
     payload = {
-        "secret": os.getenv("RECAPTCHA_SECRET_KEY"),  # Im .env setzen
+        "secret": RECAPTCHA_SECRET_KEY,
         "response": report.captcha
     }
 

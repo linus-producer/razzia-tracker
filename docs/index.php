@@ -1,3 +1,13 @@
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+$recaptchaKey = $_ENV['RECAPTCHA_SITE_KEY'] ?? '';
+$apiUrl = $_ENV['API_URL'] ?? '';
+?>
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -6,10 +16,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
-    <script src="https://www.google.com/recaptcha/api.js?render=6Ld4Ym0rAAAAADOulRfKmGerdUSWYfxptXjFDLev"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=<?= htmlspecialchars($recaptchaKey) ?>"></script>
 
-    <style>
+<style>
         :root {
             --gold: #bfa46f;
             --light-gray: #f2f2f2;
@@ -299,6 +308,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <script src="map.js"></script>
     <script>
+        const apiUrl = "<?= htmlspecialchars($apiUrl) ?>";
+        const recaptchaKey = "<?= htmlspecialchars($recaptchaKey) ?>";
+
         document.getElementById('reportForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
@@ -317,8 +329,8 @@
             responseBox.textContent = "";
 
             grecaptcha.ready(function () {
-                grecaptcha.execute('6Ld4Ym0rAAAAADOulRfKmGerdUSWYfxptXjFDLev', { action: 'submit' }).then(function (token) {
-                    fetch('https://razzia-tracker.onrender.com/api/report', {
+                grecaptcha.execute(recaptchaKey, { action: 'submit' }).then(function (token) {
+                    fetch(apiUrl, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
